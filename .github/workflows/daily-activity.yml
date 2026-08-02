@@ -32,6 +32,7 @@ jobs:
           month_now="$(TZ=Asia/Jakarta date +%m)"
           git config user.name "$GH_ACTOR"
           git config user.email "${GH_ACTOR_ID}+${GH_ACTOR}@users.noreply.github.com"
+          git pull --rebase origin "$GITHUB_REF_NAME"
 
           for commit_number in $(seq 1 15); do
             time_now="$(TZ=Asia/Jakarta date '+%H:%M:%S WIB')"
@@ -46,4 +47,15 @@ jobs:
             git commit -m "chore: record activity ${commit_number}/15 for ${date_now}"
           done
 
-          git push
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+
+            echo "Push attempt ${attempt} failed; rebasing onto the latest branch."
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            sleep $((attempt * 2))
+          done
+
+          echo "Push failed after 3 attempts."
+          exit 1
