@@ -2,8 +2,8 @@ name: Daily Activity
 
 on:
   schedule:
-    # Test on 2 August at 13:35 WIB (06:35 UTC).
-    - cron: "35 6 2 8 *"
+    # Test on 2 August at 13:40 WIB (06:40 UTC).
+    - cron: "40 6 2 8 *"
   workflow_dispatch:
 
 permissions:
