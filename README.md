@@ -70,11 +70,11 @@ Workflow saat ini berada dalam **mode pengujian** pada tanggal 2 Agustus:
 
 ```yaml
 schedule:
-  - cron: "15 7 2 8 *"
+  - cron: "42 7 2 8 *"
 ```
 
 GitHub Actions menggunakan UTC. Jadwal tersebut setara dengan satu run pada
-`14:15 WIB`. Satu run menghasilkan 15 commit berturut-turut.
+`14:42 WIB`. Satu run menghasilkan 15 commit berturut-turut.
 
 > Jadwal cron menggunakan hari dan bulan, bukan tahun. Jika tidak diubah, tes ini
 > akan dijadwalkan kembali setiap tanggal 2 Agustus.
