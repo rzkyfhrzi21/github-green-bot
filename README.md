@@ -70,14 +70,14 @@ Workflow berjalan sekali setiap hari:
 
 ```yaml
 schedule:
-  - cron: "7 18 * * *"
+  - cron: "0 18 * * *"
 ```
 
 GitHub Actions menggunakan UTC. Jadwal tersebut setara dengan satu run pada
-`01:07 WIB`. Satu run menghasilkan 15 commit berturut-turut.
+`01:00 WIB`. Satu run menghasilkan 15 commit berturut-turut.
 
-Jadwal sengaja tidak menggunakan menit `00` karena antrean GitHub Actions biasanya
-lebih padat pada awal jam. Eksekusi tetap dapat terlambat beberapa menit.
+Eksekusi scheduled workflow tidak dijamin tepat pada detik yang sama dan dapat
+terlambat beberapa menit ketika antrean GitHub Actions sedang padat.
 
 ### Jadwal Produksi yang Disarankan
 

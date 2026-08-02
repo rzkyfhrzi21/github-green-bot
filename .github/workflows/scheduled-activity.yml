@@ -2,8 +2,8 @@ name: Scheduled Activity
 
 on:
   schedule:
-    # 01:07 WIB (18:07 UTC), offset from the hour to reduce scheduler congestion.
-    - cron: "7 18 * * *"
+    # 01:00 WIB is 18:00 UTC on the previous calendar day.
+    - cron: "0 18 * * *"
   workflow_dispatch:
 
 permissions:
