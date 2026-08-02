@@ -2,8 +2,8 @@ name: Daily Activity
 
 on:
   schedule:
-    # Test on 2 August at 14:42 WIB (07:42 UTC).
-    - cron: "42 7 2 8 *"
+    # Temporary scheduler probe at GitHub's minimum supported interval.
+    - cron: "2-59/5 * * * *"
   workflow_dispatch:
 
 permissions:
