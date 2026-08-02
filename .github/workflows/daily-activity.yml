@@ -1,0 +1,49 @@
+name: Daily Activity
+
+on:
+  schedule:
+    # Test on 2 August at 13:35 WIB (06:35 UTC).
+    - cron: "35 6 2 8 *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-activity
+  cancel-in-progress: false
+
+jobs:
+  record-activity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v6
+
+      - name: Record daily activity
+        env:
+          GH_ACTOR: ${{ github.actor }}
+          GH_ACTOR_ID: ${{ github.actor_id }}
+        run: |
+          set -euo pipefail
+
+          date_now="$(TZ=Asia/Jakarta date +%F)"
+          year_now="$(TZ=Asia/Jakarta date +%Y)"
+          month_now="$(TZ=Asia/Jakarta date +%m)"
+          git config user.name "$GH_ACTOR"
+          git config user.email "${GH_ACTOR_ID}+${GH_ACTOR}@users.noreply.github.com"
+
+          for commit_number in $(seq 1 15); do
+            time_now="$(TZ=Asia/Jakarta date '+%H:%M:%S WIB')"
+            time_slug="$(TZ=Asia/Jakarta date +%H-%M-%S)"
+            activity_file="activity/${year_now}/${month_now}/${date_now}/${time_slug}-${GITHUB_RUN_ID}-${commit_number}.md"
+
+            mkdir -p "$(dirname "$activity_file")"
+            printf '# Activity %s\n\n- Recorded automatically at %s (commit %s of 15).\n' \
+              "$date_now" "$time_now" "$commit_number" > "$activity_file"
+
+            git add "$activity_file"
+            git commit -m "chore: record activity ${commit_number}/15 for ${date_now}"
+          done
+
+          git push
