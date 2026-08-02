@@ -2,9 +2,8 @@ name: Daily Activity
 
 on:
   schedule:
-    # Test every minute from 13:50 through 14:04 WIB on 2 August.
-    - cron: "50-59 6 2 8 *"
-    - cron: "0-4 7 2 8 *"
+    # Test on 2 August at 14:15 WIB (07:15 UTC).
+    - cron: "15 7 2 8 *"
   workflow_dispatch:
 
 permissions:
@@ -31,16 +30,20 @@ jobs:
           date_now="$(TZ=Asia/Jakarta date +%F)"
           year_now="$(TZ=Asia/Jakarta date +%Y)"
           month_now="$(TZ=Asia/Jakarta date +%m)"
-          time_now="$(TZ=Asia/Jakarta date '+%H:%M:%S WIB')"
-          time_slug="$(TZ=Asia/Jakarta date +%H-%M-%S)"
-          activity_file="activity/${year_now}/${month_now}/${date_now}/${time_slug}-${GITHUB_RUN_ID}.md"
-
           git config user.name "$GH_ACTOR"
           git config user.email "${GH_ACTOR_ID}+${GH_ACTOR}@users.noreply.github.com"
 
-          mkdir -p "$(dirname "$activity_file")"
-          printf '# Activity %s\n\n- Recorded automatically at %s.\n' \
-            "$date_now" "$time_now" > "$activity_file"
-          git add "$activity_file"
-          git commit -m "chore: record activity for ${date_now} ${time_now}"
+          for commit_number in $(seq 1 15); do
+            time_now="$(TZ=Asia/Jakarta date '+%H:%M:%S WIB')"
+            time_slug="$(TZ=Asia/Jakarta date +%H-%M-%S)"
+            activity_file="activity/${year_now}/${month_now}/${date_now}/${time_slug}-${GITHUB_RUN_ID}-${commit_number}.md"
+
+            mkdir -p "$(dirname "$activity_file")"
+            printf '# Activity %s\n\n- Recorded automatically at %s (commit %s of 15).\n' \
+              "$date_now" "$time_now" "$commit_number" > "$activity_file"
+
+            git add "$activity_file"
+            git commit -m "chore: record activity ${commit_number}/15 for ${date_now}"
+          done
+
           git push
